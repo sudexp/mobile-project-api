@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-console.log('Addidng sample data into the database...');
+console.log('Adding sample data into the database...');
 
 const process = require('process');
 // Get arguments passed on command line

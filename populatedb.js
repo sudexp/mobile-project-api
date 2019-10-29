@@ -98,7 +98,7 @@ const createItems = cb => {
           'Gray',
           'Textile',
           'Laces',
-          'This waterproof mens athletic shoe is slip and oil resistant with a rubber outsole.Featuring a non - metallic ASTM rated composite toe with leather and breathable mesh upper, the Eastfield is the perfect shoe for any off-the-bike activity.',
+          'This waterproof mens athletic shoe is slip and oil resistant with a rubber outsole. Featuring a non - metallic ASTM rated composite toe with leather and breathable mesh upper, the Eastfield is the perfect shoe for any off-the-bike activity.',
           callback
         )
     ],

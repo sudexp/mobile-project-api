@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-/* GET home page. */
+// GET home page.
 router.get('/', (req, res, next) => res.render('index', { title: 'Express' }));
+//router.get('/', (req, res) => res.redirect('/collection'));
 
 module.exports = router;

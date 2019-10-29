@@ -1,2 +1,2 @@
 # mobile-project-api
-REST API for mobile-project (https://github.com/sudexp/mobile-project)
+REST API for [Mobile Project](https://github.com/sudexp/mobile-project).  

@@ -14,7 +14,8 @@ if (!userArgs[0].startsWith('mongodb')) {
 */
 
 const async = require('async');
-const Item = require('./models/item');
+const Item = require('./models/Item');
+const Order = require('./models/Order');
 
 const mongoose = require('mongoose');
 const mongoDB = userArgs[0];
@@ -25,9 +26,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const items = [];
 
-const itemCreate = (model, price, color, material, closure_method, description, cb) => {
+const itemCreate = (brand, price, color, material, closure_method, description, cb) => {
   const itemDetail = {
-    model: model,
+    brand: brand,
     price: price,
     color: color,
     material: material,
@@ -107,10 +108,42 @@ const createItems = cb => {
   );
 };
 
+const orderCreate = (name, address, isCompleted, cb) => {
+  const orderDetail = {
+    // userId: userId,
+    name: name,
+    address: address,
+    isCompleted: isCompleted
+  };
+
+  const order = new Order(orderDetail);
+
+  order.save(err => {
+    if (err) {
+      cb(err, null);
+      return;
+    }
+    console.log('New order: ' + order);
+    items.push(order);
+    cb(null, order);
+  });
+};
+
+const createOrders = cb => {
+  async.parallel(
+    [
+      callback => orderCreate('admin', '40100, Jyväskylä, Piippukatu, 2', true, callback),
+      callback => orderCreate('user', '40430, Jyväskylä, Karpalokuja, 4', false, callback)
+    ],
+    // optional callback
+    cb
+  );
+};
+
 async.series(
-  [createItems],
+  [createItems, createOrders],
   // Optional callback
-  (err, results) => {
+  err => {
     if (err) {
       console.log('FINAL ERR: ' + err);
     } else {

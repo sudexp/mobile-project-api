@@ -1,7 +1,27 @@
-// const Item = require('../models/item');
+const Item = require('../models/Item');
 
-// Display list of all items.
-exports.itemList = (req, res) => res.send('Item list');
+module.exports = {
+  get: params => {
+    return new Promise((resolve, reject) => {
+      Item.find(params)
+        .then(data => {
+          resolve(data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  },
 
-// Display detail page for a specific item.
-exports.itemDetail = (req, res) => res.send('Item detail: ' + req.params.id);
+  getById: id => {
+    return new Promise((resolve, reject) => {
+      Item.findById(id)
+        .then(data => {
+          resolve(data);
+        })
+        .catch(() => {
+          reject(new Error('Item ' + id + ' not found'));
+        });
+    });
+  }
+};

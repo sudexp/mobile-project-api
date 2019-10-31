@@ -1,20 +1,12 @@
 const mongoose = require('mongoose');
 
-const Schema = mongoose.Schema;
-
-const ItemSchema = new Schema({
-  model: { type: String, required: true, max: 50 },
+const Item = new mongoose.Schema({
+  brand: { type: String, required: true },
   price: { type: Number, required: true },
-  color: { type: String },
-  material: { type: String },
-  closure_method: { type: String },
-  description: { type: String }
+  color: { type: String, default: '' },
+  material: { type: String, default: '' },
+  closure_method: { type: String, default: '' },
+  description: { type: String, default: '' }
 });
 
-// virtual for items's URL
-ItemSchema.virtual('url').get(function() {
-  return '/collection/item/' + this._id;
-});
-
-// export model
-module.exports = mongoose.model('Item', ItemSchema);
+module.exports = mongoose.model('Item', Item);

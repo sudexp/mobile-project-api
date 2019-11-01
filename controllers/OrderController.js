@@ -19,7 +19,7 @@ module.exports = {
         .then(data => {
           resolve(data);
         })
-        .catch(err => {
+        .catch(() => {
           reject(new Error('Order ' + id + ' not found'));
         });
     });

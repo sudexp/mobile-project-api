@@ -13,9 +13,9 @@ if (!userArgs[0].startsWith('mongodb')) {
 }
 */
 
-const async = require('async');
 const Item = require('./models/Item');
 const Order = require('./models/Order');
+const OrderItem = require('./models/OrderItem');
 
 const mongoose = require('mongoose');
 const mongoDB = userArgs[0];
@@ -24,132 +24,116 @@ mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const items = [];
+// Items:
+const itemCreate = itemDetails => {
+  const item = new Item(itemDetails);
 
-const itemCreate = (brand, price, color, material, closure_method, description, cb) => {
-  const itemDetail = {
-    brand: brand,
-    price: price,
-    color: color,
-    material: material,
-    closure_method: closure_method,
-    description: description
-  };
+  return item.save();
+};
 
-  const item = new Item(itemDetail);
-
-  item.save(err => {
-    if (err) {
-      cb(err, null);
-      return;
+const createItems = () => {
+  const items = [
+    {
+      brand: 'Ecco Aurora',
+      price: 100,
+      color: 'Blue',
+      material: 'Canvas',
+      closure_method: 'Laces',
+      description:
+        'Meet the ultimate Sunday sneaker. Its slip-on design and cushioned sole makes it perfect for relaxed days at home or on the go. Wear them with sweats, jeans, or anything, really. They are about to become your most versatile shoe.'
+    },
+    {
+      brand: 'Bugatti Tazzio',
+      price: 115,
+      color: 'Silver',
+      material: 'Leather',
+      closure_method: 'Laces',
+      description:
+        'For a sneaker to join your lineup, it’s got to offer something groundbreaking. This lightweight sneaker’s elevated style will have you steady stepping without the sluggish bulk.'
+    },
+    {
+      brand: 'Zenden Casual',
+      price: 60,
+      color: 'Blue',
+      material: 'Synthetic material / textile',
+      closure_method: 'Laces',
+      description:
+        'This neutral running shoe orthotic friendly and available in multiple widths. In this neutral running shoe, you will be flying from your first step to your last.'
+    },
+    {
+      brand: 'Clarks Weaver',
+      price: 75,
+      color: 'Brown',
+      material: 'Suede leather',
+      closure_method: 'Laces',
+      description:
+        'A slip-resistant outsole keeps you safe on the jobsite, and the premium full-grain leather cleans up for the office.'
+    },
+    {
+      brand: 'Marwell Lace-Up',
+      price: 80,
+      color: 'Gray',
+      material: 'Textile',
+      closure_method: 'Laces',
+      description:
+        'This waterproof mens athletic shoe is slip and oil resistant with a rubber outsole. Featuring a non - metallic ASTM rated composite toe with leather and breathable mesh upper, the Eastfield is the perfect shoe for any off-the-bike activity.'
     }
-    console.log('New item: ' + item);
-    items.push(item);
-    cb(null, item);
-  });
+  ];
+
+  return Promise.all(items.map(itemDetails => itemCreate(itemDetails)));
 };
 
-const createItems = cb => {
-  async.series(
-    [
-      callback =>
-        itemCreate(
-          'Ecco Aurora',
-          100,
-          'Blue',
-          'Canvas',
-          'Laces',
-          'Meet the ultimate Sunday sneaker. Its slip-on design and cushioned sole makes it perfect for relaxed days at home or on the go. Wear them with sweats, jeans, or anything, really. They are about to become your most versatile shoe.',
-          callback
-        ),
-      callback =>
-        itemCreate(
-          'Bugatti Tazzio',
-          115,
-          'Silver',
-          'Leather',
-          'Laces',
-          'For a sneaker to join your lineup, it’s got to offer something groundbreaking. This lightweight sneaker’s elevated style will have you steady stepping without the sluggish bulk.',
-          callback
-        ),
-      callback =>
-        itemCreate(
-          'Zenden Casual',
-          60,
-          'Blue',
-          'Synthetic material / textile',
-          'Laces',
-          'This neutral running shoe orthotic friendly and available in multiple widths. In this neutral running shoe, you will be flying from your first step to your last.',
-          callback
-        ),
-      callback =>
-        itemCreate(
-          'Clarks Weaver',
-          75,
-          'Brown',
-          'Suede leather',
-          'Laces',
-          'A slip-resistant outsole keeps you safe on the jobsite, and the premium full-grain leather cleans up for the office.',
-          callback
-        ),
-      callback =>
-        itemCreate(
-          'Marwell Lace-Up',
-          80,
-          'Gray',
-          'Textile',
-          'Laces',
-          'This waterproof mens athletic shoe is slip and oil resistant with a rubber outsole. Featuring a non - metallic ASTM rated composite toe with leather and breathable mesh upper, the Eastfield is the perfect shoe for any off-the-bike activity.',
-          callback
-        )
-    ],
-    // optional callback
-    cb
-  );
+// Orders:
+const orderCreate = orderDetails => {
+  const order = new Order(orderDetails);
+
+  return order.save();
 };
 
-const orderCreate = (name, address, isCompleted, cb) => {
-  const orderDetail = {
-    // userId: userId,
-    name: name,
-    address: address,
-    isCompleted: isCompleted
-  };
+const createOrders = () => {
+  const orders = [
+    { name: 'admin', address: '40100, Jyväskylä, Piippukatu, 2', isCompleted: true },
+    { name: 'user', address: '40430, Jyväskylä, Karpalokuja, 4', isCompleted: false }
+  ];
 
-  const order = new Order(orderDetail);
-
-  order.save(err => {
-    if (err) {
-      cb(err, null);
-      return;
-    }
-    console.log('New order: ' + order);
-    items.push(order);
-    cb(null, order);
-  });
+  return Promise.all(orders.map(orderDetails => orderCreate(orderDetails)));
 };
 
-const createOrders = cb => {
-  async.parallel(
-    [
-      callback => orderCreate('admin', '40100, Jyväskylä, Piippukatu, 2', true, callback),
-      callback => orderCreate('user', '40430, Jyväskylä, Karpalokuja, 4', false, callback)
-    ],
-    // optional callback
-    cb
-  );
+// OrderItems:
+const orderItemCreate = orderItemDetails => {
+  const orderItem = new OrderItem(orderItemDetails);
+
+  return orderItem.save();
 };
 
-async.series(
-  [createItems, createOrders],
-  // Optional callback
-  err => {
-    if (err) {
-      console.log('FINAL ERR: ' + err);
-    } else {
-      console.log('items: ' + items);
-    }
-    // All done, disconnect from database
-    mongoose.connection.close();
-  }
-);
+const createOrderItems = async () => {
+  const orders = await Order.find({});
+  const orderId = orders[0]._id;
+  const items = await Item.find({});
+  const itemId1 = items[0]._id;
+  const itemId2 = items[1]._id;
+
+  console.log(`orderId=${orderId}, itemId1=${itemId1}, itemId2=${itemId2}`);
+
+  const orderItems = [
+    { orderId: orderId, itemId: itemId1, size: 45, quantity: 1 },
+    { orderId: orderId, itemId: itemId2, size: 39, quantity: 2 }
+  ];
+
+  return Promise.all(orderItems.map(orderItemsDetails => orderItemCreate(orderItemsDetails)));
+};
+
+const main = async () => {
+  const items = await createItems();
+  console.log('items: ', items);
+
+  const orders = await createOrders();
+  console.log('orders: ', orders);
+
+  const orderItems = await createOrderItems();
+  console.log('orderItems: ', orderItems);
+
+  mongoose.connection.close();
+};
+
+main().catch(err => console.log(err));

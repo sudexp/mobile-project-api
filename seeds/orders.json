@@ -1,0 +1,4 @@
+[
+  { "name": "admin", "address": "40100, Jyväskylä, Piippukatu, 2", "isCompleted": "true" },
+  { "name": "user", "address": "40430, Jyväskylä, Karpalokuja, 4", "isCompleted": "false" }
+]

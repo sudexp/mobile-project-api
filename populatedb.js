@@ -13,16 +13,33 @@ if (!userArgs[0].startsWith('mongodb')) {
 }
 */
 
+const mongoose = require('mongoose');
+const db = mongoose.connection;
+// drop collections before populate
+db.once('open', () => {
+  console.log('db connect');
+  db.dropCollection('items', err => {
+    err ? console.log('error delete collection items') : console.log('delete collection items success');
+  });
+  db.dropCollection('orders', err => {
+    err ? console.log('error delete collection orders') : console.log('delete collection orders success');
+  });
+  db.dropCollection('orderitems', err => {
+    err ? console.log('error delete collection orderItems') : console.log('delete collection orderItems success');
+  });
+});
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+const mongoDB = userArgs[0];
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.Promise = global.Promise;
+
 const Item = require('./models/Item');
 const Order = require('./models/Order');
 const OrderItem = require('./models/OrderItem');
 
-const mongoose = require('mongoose');
-const mongoDB = userArgs[0];
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.Promise = global.Promise;
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+const items = require('./seeds/items');
+const orders = require('./seeds/orders');
 
 // Items:
 const itemCreate = itemDetails => {
@@ -31,57 +48,7 @@ const itemCreate = itemDetails => {
   return item.save();
 };
 
-const createItems = () => {
-  const items = [
-    {
-      brand: 'Ecco Aurora',
-      price: 100,
-      color: 'Blue',
-      material: 'Canvas',
-      closure_method: 'Laces',
-      description:
-        'Meet the ultimate Sunday sneaker. Its slip-on design and cushioned sole makes it perfect for relaxed days at home or on the go. Wear them with sweats, jeans, or anything, really. They are about to become your most versatile shoe.'
-    },
-    {
-      brand: 'Bugatti Tazzio',
-      price: 115,
-      color: 'Silver',
-      material: 'Leather',
-      closure_method: 'Laces',
-      description:
-        'For a sneaker to join your lineup, it’s got to offer something groundbreaking. This lightweight sneaker’s elevated style will have you steady stepping without the sluggish bulk.'
-    },
-    {
-      brand: 'Zenden Casual',
-      price: 60,
-      color: 'Blue',
-      material: 'Synthetic material / textile',
-      closure_method: 'Laces',
-      description:
-        'This neutral running shoe orthotic friendly and available in multiple widths. In this neutral running shoe, you will be flying from your first step to your last.'
-    },
-    {
-      brand: 'Clarks Weaver',
-      price: 75,
-      color: 'Brown',
-      material: 'Suede leather',
-      closure_method: 'Laces',
-      description:
-        'A slip-resistant outsole keeps you safe on the jobsite, and the premium full-grain leather cleans up for the office.'
-    },
-    {
-      brand: 'Marwell Lace-Up',
-      price: 80,
-      color: 'Gray',
-      material: 'Textile',
-      closure_method: 'Laces',
-      description:
-        'This waterproof mens athletic shoe is slip and oil resistant with a rubber outsole. Featuring a non - metallic ASTM rated composite toe with leather and breathable mesh upper, the Eastfield is the perfect shoe for any off-the-bike activity.'
-    }
-  ];
-
-  return Promise.all(items.map(itemDetails => itemCreate(itemDetails)));
-};
+const createItems = () => Promise.all(items.map(itemDetails => itemCreate(itemDetails)));
 
 // Orders:
 const orderCreate = orderDetails => {
@@ -90,14 +57,7 @@ const orderCreate = orderDetails => {
   return order.save();
 };
 
-const createOrders = () => {
-  const orders = [
-    { name: 'admin', address: '40100, Jyväskylä, Piippukatu, 2', isCompleted: true },
-    { name: 'user', address: '40430, Jyväskylä, Karpalokuja, 4', isCompleted: false }
-  ];
-
-  return Promise.all(orders.map(orderDetails => orderCreate(orderDetails)));
-};
+const createOrders = () => Promise.all(orders.map(orderDetails => orderCreate(orderDetails)));
 
 // OrderItems:
 const orderItemCreate = orderItemDetails => {
@@ -136,4 +96,6 @@ const main = async () => {
   mongoose.connection.close();
 };
 
-main().catch(err => console.log(err));
+main().catch(err => {
+  console.log(err), mongoose.connection.close();
+});

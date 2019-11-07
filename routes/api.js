@@ -10,17 +10,19 @@ router.get('/', (req, res) => {
   });
 });
 
-// GET /api/collection || /api/orders:
+// GET /api/collection || /api/orders || /api/users
 router.get('/:resource', (req, res) => {
   const resource = req.params.resource;
   const controller = controllers[resource];
   const filters = req.query;
+  console.log(filters);
 
-  if (controller == null) {
+  if (controller == null || resource === 'items') {
     res.json({
       confirmation: 'fail',
       message: 'Invalid Resource'
     });
+
     return;
   }
 
@@ -40,12 +42,12 @@ router.get('/:resource', (req, res) => {
     });
 });
 
-// GET /api/collection/:id || /api/orders/:id
+// GET /api/collection/:id || /api/orders/:id || /api/users/:id
 router.get('/:resource/:id', (req, res) => {
   const resource = req.params.resource;
   const id = req.params.id;
-
   const controller = controllers[resource];
+
   if (controller == null) {
     res.json({
       confirmation: 'fail',
@@ -71,23 +73,65 @@ router.get('/:resource/:id', (req, res) => {
     });
 });
 
-// GET /api/orders/:orderId/items/:id
-router.get('/:resource/:id/:resource/:id', (req, res) => {
-  const resource = req.params.resource;
-  const id = req.params.id;
+// GET /api/orders/{order_id}/items:
+router.get('/orders/:orderId/items', (req, res) => {
+  const orderId = req.params.orderId;
+  const controller = controllers.items;
+  // const filters = { orderId: orderId };
+  console.log(orderId);
 
-  const controller = controllers[resource];
-  if (controller == null) {
-    res.json({
-      confirmation: 'fail',
-      message: 'Invalid Resource'
+  controller
+    .get({ orderId })
+    .then(data => {
+      res.json({
+        confirmation: 'success',
+        data: data
+      });
+    })
+    .catch(err => {
+      res.json({
+        confirmation: 'fail',
+        message: err.message
+      });
     });
+});
 
-    return;
-  }
+// GET /api/orders/:orderId/items/:id
+router.get('/orders/:orderId/items/:id', (req, res) => {
+  const orderId = req.params.orderId;
+  const id = req.params.id;
+  const controller = controllers.items;
 
   controller
     .getById(id)
+    .then(data => {
+      if (data.orderId != orderId) {
+        // wrong order id
+        res.json({
+          confirmation: 'fail',
+          message: 'Invalid Resource'
+        });
+        return;
+      }
+      res.json({
+        confirmation: 'success',
+        data: data
+      });
+    })
+    .catch(err => {
+      res.json({
+        confirmation: 'fail',
+        message: err.message
+      });
+    });
+});
+
+// POST /api/auth
+router.post('/auth', (req, res) => {
+  const controller = controllers.auth;
+
+  controller
+    .auth(req.body)
     .then(data => {
       res.json({
         confirmation: 'success',
@@ -106,6 +150,7 @@ router.get('/:resource/:id/:resource/:id', (req, res) => {
 router.post('/:resource', (req, res) => {
   const resource = req.params.resource;
   const controller = controllers[resource];
+
   if (controller == null) {
     res.json({
       confirmation: 'fail',
@@ -132,17 +177,8 @@ router.post('/:resource', (req, res) => {
 });
 
 // POST /api/orders/:orderId/items
-router.post('/:resource/:id/:resourse', (req, res) => {
-  const resource = req.params.resource;
-  const controller = controllers[resource];
-  if (controller == null) {
-    res.json({
-      confirmation: 'fail',
-      message: 'Invalid Resource'
-    });
-
-    return;
-  }
+router.post('/orders/:orderId/items', (req, res) => {
+  const controller = controllers.items;
 
   controller
     .post(req.body)

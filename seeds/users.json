@@ -1,0 +1,4 @@
+[
+  { "name": "admin", "email": "sudexp@icloud.com", "password": "qwert12", "token": "" },
+  { "name": "user", "email": "sudexp12@gmail.com", "password": "asdfg12", "token": "" }
+]

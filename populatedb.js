@@ -1,10 +1,18 @@
 #! /usr/bin/env node
 
-console.log('Adding sample data into the database...');
-
 const process = require('process');
+const mongoose = require('mongoose');
+const Item = require('./models/Item');
+const Order = require('./models/Order');
+const OrderItem = require('./models/OrderItem');
+const User = require('./models/User');
+const items = require('./seeds/items');
+const orders = require('./seeds/orders');
+const users = require('./seeds/users');
+
 // Get arguments passed on command line
 const userArgs = process.argv.slice(2);
+const mongoDB = userArgs[0];
 
 /*
 if (!userArgs[0].startsWith('mongodb')) {
@@ -13,7 +21,6 @@ if (!userArgs[0].startsWith('mongodb')) {
 }
 */
 
-const mongoose = require('mongoose');
 const db = mongoose.connection;
 // drop collections before populate
 db.once('open', () => {
@@ -30,16 +37,8 @@ db.once('open', () => {
 });
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const mongoDB = userArgs[0];
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
-
-const Item = require('./models/Item');
-const Order = require('./models/Order');
-const OrderItem = require('./models/OrderItem');
-
-const items = require('./seeds/items');
-const orders = require('./seeds/orders');
 
 // Items:
 const itemCreate = itemDetails => {
@@ -83,6 +82,15 @@ const createOrderItems = async () => {
   return Promise.all(orderItems.map(orderItemsDetails => orderItemCreate(orderItemsDetails)));
 };
 
+// Users:
+const userCreate = userDetails => {
+  const user = new User(userDetails);
+
+  return user.save();
+};
+
+const createUsers = () => Promise.all(users.map(userDetails => userCreate(userDetails)));
+
 const main = async () => {
   const items = await createItems();
   console.log('items: ', items);
@@ -92,6 +100,9 @@ const main = async () => {
 
   const orderItems = await createOrderItems();
   console.log('orderItems: ', orderItems);
+
+  const users = await createUsers();
+  console.log('users: ', users);
 
   mongoose.connection.close();
 };

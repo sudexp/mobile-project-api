@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middlewares/authMiddleware');
 const controllers = require('../controllers');
+
+router.use(authMiddleware);
 
 // GET /api
 router.get('/', (req, res) => {
@@ -26,6 +29,12 @@ router.get('/:resource', (req, res) => {
     return;
   }
 
+  // E.g. order controller should add userId to the filters to fetch orders.
+  // we have access to req.userId
+  if (resource === 'orders') {
+    console.log(`[/orders] added userId=${req.userId} to filters.`);
+    filters.userId = req.userId;
+  }
   controller
     .get(filters)
     .then(data => {

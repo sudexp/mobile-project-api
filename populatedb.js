@@ -34,6 +34,9 @@ db.once('open', () => {
   db.dropCollection('orderitems', err => {
     err ? console.log('error delete collection orderItems') : console.log('delete collection orderItems success');
   });
+  db.dropCollection('users', err => {
+    err ? console.log('error delete collection users') : console.log('delete collection users success');
+  });
 });
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 

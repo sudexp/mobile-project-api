@@ -29,6 +29,7 @@ const validateToken = (token, res, req, next) => {
 
 const authMiddleware = (req, res, next) => {
   console.log(`[authMiddleware] ...`);
+  // todo: it is better to use headers for storing token instead of query param.
   const token = req.query.token;
   const allowWithoutToken =
     req.path === '/users' ||

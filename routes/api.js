@@ -135,6 +135,24 @@ router.get('/orders/:orderId/items/:id', (req, res) => {
     });
 });
 
+// postRequest
+const postRequest = (controller, res, postData) => {
+  controller
+    .post(postData)
+    .then(data => {
+      res.json({
+        confirmation: 'success',
+        data: data
+      });
+    })
+    .catch(err => {
+      res.json({
+        confirmation: 'fail',
+        message: err.message
+      });
+    });
+}
+
 // POST /api/auth
 router.post('/auth', (req, res) => {
   const controller = controllers.auth;
@@ -155,54 +173,23 @@ router.post('/auth', (req, res) => {
     });
 });
 
-// POST /api/orders
-router.post('/:resource', (req, res) => {
-  const resource = req.params.resource;
-  const controller = controllers[resource];
-
-  if (controller == null) {
-    res.json({
-      confirmation: 'fail',
-      message: 'Invalid Resource'
-    });
-
-    return;
-  }
-
-  controller
-    .post(req.body)
-    .then(data => {
-      res.json({
-        confirmation: 'success',
-        data: data
-      });
-    })
-    .catch(err => {
-      res.json({
-        confirmation: 'fail',
-        message: err.message
-      });
-    });
+// POST /api/orders?token=12345
+// body: { name: "admin", address: "Jyvaskyla" }
+router.post('/orders', (req, res) => {
+  const controller = controllers.orders;
+  // token -> userId
+  // { name: "Dima", address: "Jyvaskyla", userId: "abc123" }
+  const postData = {
+    ...req.body,
+    userId: req.userId
+  };
+  postRequest(controller, res, postData);
 });
 
-// POST /api/orders/:orderId/items
+// POST /api/orders/:orderId/items?token=12345
 router.post('/orders/:orderId/items', (req, res) => {
   const controller = controllers.items;
-
-  controller
-    .post(req.body)
-    .then(data => {
-      res.json({
-        confirmation: 'success',
-        data: data
-      });
-    })
-    .catch(err => {
-      res.json({
-        confirmation: 'fail',
-        message: err.message
-      });
-    });
+  postRequest(controller, res, req.body);
 });
 
 module.exports = router;

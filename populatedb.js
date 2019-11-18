@@ -53,8 +53,15 @@ const itemCreate = itemDetails => {
 const createItems = () => Promise.all(items.map(itemDetails => itemCreate(itemDetails)));
 
 // Orders:
-const orderCreate = orderDetails => {
-  const order = new Order(orderDetails);
+const orderCreate = async orderDetails => {
+  // get 1st user and get its _id. Then use this as `userId` for creating an order
+  const users = await User.find({});
+  const userId = users[0]._id;
+
+  const order = new Order({
+    ...orderDetails,
+    userId
+  });
 
   return order.save();
 };
@@ -98,14 +105,14 @@ const main = async () => {
   const items = await createItems();
   console.log('items: ', items);
 
+  const users = await createUsers();
+  console.log('users: ', users);
+
   const orders = await createOrders();
   console.log('orders: ', orders);
 
   const orderItems = await createOrderItems();
   console.log('orderItems: ', orderItems);
-
-  const users = await createUsers();
-  console.log('users: ', users);
 
   mongoose.connection.close();
 };

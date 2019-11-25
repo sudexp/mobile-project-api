@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const process = require('process');
+// const process = require('process');
 const mongoose = require('mongoose');
 const Item = require('./models/Item');
 const Order = require('./models/Order');
@@ -10,9 +10,13 @@ const items = require('./seeds/items');
 const orders = require('./seeds/orders');
 const users = require('./seeds/users');
 
-// Get arguments passed on command line
+/* Get arguments passed on command line
 const userArgs = process.argv.slice(2);
-const mongoDB = userArgs[0];
+const mongoDB = userArgs[0]; */
+
+const config = require('config');
+const mongoDB = config.get('dbConfig.dbConnection');
+console.log(`mongoDB = ${mongoDB}`);
 
 /*
 if (!userArgs[0].startsWith('mongodb')) {

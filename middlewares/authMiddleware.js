@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-// Add 'middlware' to check auth token. Request { Headers: {'token': '123456789'}}
+// Add 'middlware' to check auth token. Request { headers: {'token': '123456789'}}
 // 1. Looks for the auth token in headers
 // 2. Finds a user with this token
 //   2a If token is found and valid then OK
@@ -9,7 +9,7 @@ const User = require('../models/User');
 
 // validate token
 const validateToken = (token, res, req, next) => {
-  User.find(token).then(data => {
+  User.find({ token }).then(data => {
     console.log(`token = ${token}, data = ${data}`);
     // check if data is not empty
     // grab userID
@@ -21,8 +21,11 @@ const validateToken = (token, res, req, next) => {
     const userId = data[0]._id;
     req.userId = userId;
     console.log(`[authMiddleware] Token is OK. User id = ${userId}`);
+    // cleanup token from query:
+    delete req.query.token;
     next();
-  }).catch(() => {
+  }).catch((err) => {
+    console.log(err)
     res.json({ error: 'system error' });
   });
 }

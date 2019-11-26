@@ -18,7 +18,8 @@ router.get('/:resource', (req, res) => {
   const resource = req.params.resource;
   const controller = controllers[resource];
   const filters = req.query;
-  console.log(filters);
+  console.log('[api.js] filters = ', filters);
+  console.log('[api.js] req.userId = ', req.userId);
 
   if (controller == null || resource === 'items') {
     res.json({
@@ -34,6 +35,7 @@ router.get('/:resource', (req, res) => {
   if (resource === 'orders') {
     console.log(`[/orders] added userId=${req.userId} to filters.`);
     filters.userId = req.userId;
+    console.log(filters)
   }
   controller
     .get(filters)
@@ -82,7 +84,7 @@ router.get('/:resource/:id', (req, res) => {
     });
 });
 
-// GET /api/orders/{order_id}/items:
+// GET /api/orders/:order_id/items
 router.get('/orders/:orderId/items', (req, res) => {
   const orderId = req.params.orderId;
   const controller = controllers.items;

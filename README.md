@@ -20,6 +20,7 @@ color: { type: String, default: '' },
 material: { type: String, default: '' },
 closure_method: { type: String, default: '' },
 description: { type: String, default: '' }
+image: { type: String, default: '' }
 ```
 
 Similarly, such models as [Order.js](models/Order.js), [OrderItem.js](models/OrderItem.js), [User.js](models/User.js) are also used in the project. After saving the model in *MongoDB*, a Document is created with the same properties as those defined in the scheme based on which the model was created.  

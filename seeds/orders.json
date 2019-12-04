@@ -1,4 +1,20 @@
 [
-  { "name": "admin", "address": "40100, Jyväskylä, Piippukatu, 2", "isCompleted": "true" },
-  { "name": "user", "address": "40430, Jyväskylä, Karpalokuja, 4", "isCompleted": "false" }
+  {
+    "fullName": "admin",
+    "address": {
+      "zipCode": "40100",
+      "city": "Jyväskylä",
+      "addressLine": "Piippukatu, 2"
+    },
+    "isCompleted": "true"
+  },
+  {
+    "fullName": "user",
+    "address": {
+      "zipCode": "40430",
+      "city": "Jyväskylä",
+      "addressLine": "Karpalokuja, 4"
+    },
+    "isCompleted": "false"
+  }
 ]

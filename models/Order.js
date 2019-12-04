@@ -3,8 +3,12 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const Order = new mongoose.Schema({
   userId: { type: ObjectId, required: true },
-  name: { type: String, required: true },
-  address: { type: String, required: true },
+  fullName: { type: String, required: true },
+  address: {
+    zipCode: { type: Number, required: true },
+    city: { type: String, required: true },
+    addressLine: { type: String, required: true }
+  },
   isCompleted: { type: Boolean }
 });
 

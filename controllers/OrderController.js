@@ -27,6 +27,16 @@ module.exports = {
 
   post: params => {
     return new Promise((resolve, reject) => {
+      if (params.orderId) {
+        Order.updateOne({ _id: params.orderId }, params.orderDetails)
+          .then(data => {
+            resolve(data);
+          })
+          .catch(err => {
+            reject(err);
+          });
+        return;
+      }
       // hash PW
       Order.create(params)
         .then(data => {

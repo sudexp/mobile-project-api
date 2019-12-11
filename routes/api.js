@@ -147,7 +147,6 @@ const deleteRequest = (controller, res, postData) => {
   return makeRequest('delete', controller, res, postData)
 }
 
-
 const makeRequest = (method, controller, res, postData) => {
   controller[method](postData)
     .then(data => {
@@ -193,6 +192,17 @@ router.post('/orders', (req, res) => {
   const postData = {
     ...req.body,
     userId: req.userId
+  };
+  postRequest(controller, res, postData);
+});
+
+// POST /api/orders/:orderid?token=12345 - to complete token
+// body: { isCompleted: true, phone, address }
+router.post('/orders/:orderId', (req, res) => {
+  const controller = controllers.orders;
+  const postData = {
+    orderDetails: req.body,
+    orderId: req.params.orderId
   };
   postRequest(controller, res, postData);
 });

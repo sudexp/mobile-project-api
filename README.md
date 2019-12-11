@@ -63,9 +63,13 @@ All other routes include */api/* string and are presented below.
 *POST routes:*  
 - */api/auth* - login (auth) route  
 - */api/orders* - to create orders  
+- */api/orders/:orderId* - to complete order  
 - */api/orders/:orderId/items* - to create items for the given order  
 
 *Note:* POST requests are tested with using [Postman](https://www.getpostman.com/).
+
+*DELETE routes:*
+- */api/orders/:orderId/items/:orderItemId* - to delete item from order  
 
 The entire routing logic is closely related to the corresponding controller files, which handle incoming HTTP requests and send back to the client some result of the handling. These files are located in the [controllers](controllers) folder: [AuthController.js](controllers/AuthController.js), [ItemController.js](controllers/ItemController.js), [OrderController.js](controllers/OrderController.js), [OrderItemController.js](controllers/OrderItemController.js) and [UserController.js](controllers/UserController.js).  
 

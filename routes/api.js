@@ -196,7 +196,7 @@ router.post('/orders', (req, res) => {
   postRequest(controller, res, postData);
 });
 
-// POST /api/orders/:orderid?token=12345 - to complete token
+// POST /api/orders/:orderid?token=12345 - to complete order
 // body: { isCompleted: true, phone, address }
 router.post('/orders/:orderId', (req, res) => {
   const controller = controllers.orders;

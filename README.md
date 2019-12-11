@@ -9,6 +9,15 @@ The purpose of this project is to develop a REST API using the following technol
 - [MongoDB](https://www.mongodb.com/) as a database  
 - [MongooseJS](https://mongoosejs.com/) as a MongoDB object modeling tool designed to work in an asynchronous environment.  
 
+**To run project:**  
+
+- download or clone it  
+- run *npm install* in command line  
+- run *nodemon* (or *npm run devstart* if you do not have [nodemon](https://www.npmjs.com/package/nodemon) installed globally) in command line   
+- open [localhost:3000](http://localhost:3000/api/)* in browser.  
+
+**Basic information shortly**  
+
 The database is deployed on the free cloud service [MongoDB Atlas](https://www.mongodb.com/cloud). Connection to the database requires login and password, which are specified in *config/local.json*. For security reasons, this file is included in the *.gitignore* list.  
 
 The models compiled from the descriptions of the corresponding Mongoose Schemas are located in the *models* folder. For example, model [Item.js](models/item.js) is based on a Mongoose Schema that contains the following mandatory properties:  
@@ -27,7 +36,7 @@ Similarly, such models as [Order.js](models/Order.js), [OrderItem.js](models/Ord
 
 For database populating on server is used script [populate.js](populatedb.js). This script is launched by calling from the command line with the command *node populatedb*. The script is arranged in such a way that before filling the database with new data, the old data is completely cleared automatically.  
 
-One of the main tasks of this REST API is to create routes for handling frontend requests. Main route is defined in the main project file [app.js](app.js):  
+One of the most important part of REST API is to create routes for handling frontend requests. Main route is defined in the main project file [app.js](app.js):  
 ```
 // app.js
 const api = require('./routes/api');
@@ -38,17 +47,18 @@ All other routes include */api/* string and are presented below.
 
 *GET routes:*  
 - */api/collection* - to get a collection of items  
-- */api/orders* - to get orders of items  
+- */api/orders* - to get orders  
 - */api/users* - to get users  
 
-- */api/collection/:id* - to get a particular item  
+- */api/collection/:id* - to get a particular item from collection  
 - */api/orders/:id* - to get a particular order  
 - */api/users/:id* - to get a particular user  
 
-- */api/orders/:order_id/items* - to get all items belonging to a particular user  
-- */api/orders/:orderId/items/:id* - to get a particular belonging to a particular user  
+- */api/orders/:orderId/items* - to get all items belonging to a particular order  
+- */api/orders/:orderId/items/:id* - to get a particular item from order items  
 
-*Note:* it is also possible to perform GET request using query filters, for example, */api/collection?color=Blue*
+*Note:* it is also possible to perform GET request using query filters, for example:
+- */api/collection?color=Blue*  - to get all the items with the blue color  
 
 *POST routes:*  
 - */api/auth* - login (auth) route  
@@ -113,3 +123,5 @@ const authMiddleware = (req, res, next) => {
   validateToken(token, res, req, next);
 };
 ```
+
+REST API functionality **is more clearly demonstrated** in mobile project [documentation](https://github.com/sudexp/mobile-project/blob/master/README.md).

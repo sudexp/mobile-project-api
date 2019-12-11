@@ -3,7 +3,7 @@ const User = require('../models/User');
 module.exports = {
   auth: params => {
     return new Promise((resolve, reject) => {
-      User.find({ name: params.name, password: params.password })
+      User.find({ email: params.email, password: params.password })
         .then(data => {
           console.log(data);
           // generate token, save it to database and send it to user

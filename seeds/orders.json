@@ -1,6 +1,7 @@
 [
   {
     "fullName": "admin",
+    "phone": "1234567890",
     "address": {
       "zipCode": "40100",
       "city": "Jyväskylä",
@@ -10,6 +11,7 @@
   },
   {
     "fullName": "user",
+    "phone": "9876543210",
     "address": {
       "zipCode": "40430",
       "city": "Jyväskylä",

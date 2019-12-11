@@ -36,5 +36,23 @@ module.exports = {
           reject(err);
         });
     });
+  },
+
+  delete: params => {
+    return new Promise((resolve, reject) => {
+      console.log(`[delete] itemID=${params.orderItemId}`)
+      // hash PW
+      OrderItem.deleteOne({ _id: params.orderItemId })
+        .then(data => {
+          if (data.deletedCount !== 1) {
+            reject(new Error(`Was not able to remove item ${params.orderItemId} from DB`));
+            return;
+          }
+          resolve(data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   }
 };

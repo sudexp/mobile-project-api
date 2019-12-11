@@ -35,7 +35,7 @@ router.get('/:resource', (req, res) => {
   if (resource === 'orders') {
     console.log(`[/orders] added userId=${req.userId} to filters.`);
     filters.userId = req.userId;
-    console.log(filters)
+    console.log('[filters]: ', filters)
   }
   controller
     .get(filters)
@@ -139,8 +139,17 @@ router.get('/orders/:orderId/items/:id', (req, res) => {
 
 // postRequest
 const postRequest = (controller, res, postData) => {
-  controller
-    .post(postData)
+  return makeRequest('post', controller, res, postData)
+}
+
+// deleteRequest
+const deleteRequest = (controller, res, postData) => {
+  return makeRequest('delete', controller, res, postData)
+}
+
+
+const makeRequest = (method, controller, res, postData) => {
+  controller[method](postData)
     .then(data => {
       res.json({
         confirmation: 'success',
@@ -192,6 +201,12 @@ router.post('/orders', (req, res) => {
 router.post('/orders/:orderId/items', (req, res) => {
   const controller = controllers.items;
   postRequest(controller, res, req.body);
+});
+
+// DELETE /api/orders/:orderId/items?token=12345
+router.delete('/orders/:orderId/items/:orderItemId', (req, res) => {
+  const controller = controllers.items;
+  deleteRequest(controller, res, req.params);
 });
 
 module.exports = router;
